@@ -17,3 +17,5 @@ dependencies:
     - torchvision==0.18.0
     - tqdm==4.66.4
     - wheel==0.43.0
+    - kaggle==1.6.14
+    - scrapy==2.11.1
