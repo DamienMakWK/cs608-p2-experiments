@@ -4,6 +4,8 @@ channels:
 dependencies:
   - python=3.11.9
   - pip=24.0.0
+  - ipython==8.24.0
+  - ipykernel==6.29.3
   - pip:
     - cornac==2.2.1
     - matplotlib==3.8.4
