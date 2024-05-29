@@ -4,6 +4,7 @@ import csv
 import os
 import logging
 import re
+import time
 
 class MalSpiderSpider(scrapy.Spider):
     target_cols_list = ["anime_id", "synopsis", "image_url"]
@@ -23,22 +24,22 @@ class MalSpiderSpider(scrapy.Spider):
     os.makedirs(output_directory, exist_ok=True)
 
     def start_requests(self):
-
         print(f"Starting scraping operation\n")
 
-        for MAL_id in self.MAL_id_list:
+        output_file = self.output_directory + "/anime_scrapy.csv"
+        
+        with open(output_file, "w", newline="", encoding="utf-8") as file:
+            writer = csv.writer(file, delimiter="|")
+            writer.writerow(self.target_cols_list)
 
+        for MAL_id in self.MAL_id_list:
+            time.sleep(1)
+            
             url = self.base_url + f"/{MAL_id}"
-            output_file = self.output_directory + "/anime_scrapy.csv"
 
             self.log(f"URL: {url}", level=logging.INFO)
             
-            with open(output_file, "w", newline="", encoding="utf-8") as file:
-                writer = csv.writer(file, delimiter="|")
-                writer.writerow(self.target_cols_list)
-
             yield scrapy.Request(url=url, callback=self.parse, meta={"output_file":output_file})
-
 
     def parse(self, response):
         # Extracting anime_id
