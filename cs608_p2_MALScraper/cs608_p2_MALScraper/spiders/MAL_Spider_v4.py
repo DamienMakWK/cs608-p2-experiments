@@ -1,4 +1,6 @@
 import scrapy
+from scrapy.crawler import CrawlerProcess
+from scrapy.signals import spider_closed
 import pandas as pd
 import csv
 import os
@@ -13,7 +15,7 @@ class MalSpider(scrapy.Spider):
     anime_df = pd.read_csv("C:/Users/user/My Drive/MITB_AI/Term 5/CS608 Recommender Systems/Project 2/cs608-p2-experiments/data/01_raw/rating.csv")
     MAL_id_list = anime_df["anime_id"].unique()
 
-    name = "MAL_Spider_v3"
+    name = "MAL_Spider_v4"
     base_url = "https://myanimelist.net/anime"
 
     def start_requests(self):
@@ -28,6 +30,9 @@ class MalSpider(scrapy.Spider):
 
             self.log(f"URL: {url}", level=logging.INFO)
             yield scrapy.Request(url=url, callback=self.parse)
+    def __init__(self, *args, **kwargs):
+        super(MALSpider, self).__init__(*args, **kwargs)
+        self.data = []
 
     def parse(self, response):
 
@@ -53,19 +58,18 @@ class MalSpider(scrapy.Spider):
             "synopsis": [synopsis],
             "img_url": [img_url]
         }
-        df_content = pd.DataFrame(df_content, columns=self.target_cols_list)
-        
+        self.data.append(df_content)        
+    def from_crawler(cls, crawler, *args, **kwargs):
+        spider = super(MALSpider, cls).from_crawler(crawler, *args, **kwargs)
+        crawler.signals.connect(spider.spider_closed, signal=spider_closed)
+        return spider
 
-        if os.path.exists("C:/Users/user/My Drive/MITB_AI/Term 5/CS608 Recommender Systems/Project 2/cs608-p2-experiments/data/01_raw/anime_scrapy.csv"):
-            df = pd.read_csv("C:/Users/user/My Drive/MITB_AI/Term 5/CS608 Recommender Systems/Project 2/cs608-p2-experiments/data/01_raw/anime_scrapy.csv")
-            # TO DO: Append new information into df  
-            df = df.append(df_content, ignore_index=True)
-        else:
-            df = df_content
-        
-        df.to_csv(
-            "C:/Users/user/My Drive/MITB_AI/Term 5/CS608 Recommender Systems/Project 2/cs608-p2-experiments/data/01_raw/anime_scrapy.csv",
-            sep = "|"
-            )
+    def spider_closed(self, spider):
+        # Convert collected data into a DataFrame
+        df = pd.DataFrame(self.data)
+        # Write the DataFrame to a CSV file
+        df_path = "C:/Users/user/My Drive/MITB_AI/Term 5/CS608 Recommender Systems/Project 2/cs608-p2-experiments/data/01_raw/anime_scrapy.csv"
+        df.to_csv(df_path, sep="|", index=False)
+        print(f"Data saved to {df_path}")
 
 
