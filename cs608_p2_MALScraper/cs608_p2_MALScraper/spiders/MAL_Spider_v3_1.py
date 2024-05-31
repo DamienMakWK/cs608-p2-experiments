@@ -43,11 +43,25 @@ class MalSpider(scrapy.Spider):
         # Extracting image URL
         img_url = response.css('img[itemprop="image"]::attr(data-src)').get()
 
+        # Extracting rating (eg. R-17+)
+        rating = response.xpath('//span[@class="dark_text" and contains(text(), "Rating:")]/following-sibling::text()').get().strip()
+
+        # Extracting voice actors 
+        va_list = response.css('td.va-t.ar.pl4.pr4 a::text').getall()
+
+        # Extracting staff members
+
+        # Extracting user reviews
+
+        # Extracting # of each review type (recommended, mixed feelings, not recommended)
+
         # Collecting data
         self.data.append({
             "anime_id": anime_id,
             "synopsis": synopsis,
-            "image_url": img_url
+            "image_url": img_url,
+            "rating":rating,
+            "va_list":va_list
         })
 
     @classmethod

@@ -33,7 +33,7 @@ class MalSpiderSpider(scrapy.Spider):
             writer.writerow(self.target_cols_list)
 
         for MAL_id in self.MAL_id_list:
-            time.sleep(1)
+            time.sleep(3)
             
             url = self.base_url + f"/{MAL_id}"
 
