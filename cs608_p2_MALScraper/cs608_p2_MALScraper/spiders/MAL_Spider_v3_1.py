@@ -9,7 +9,20 @@ import logging
 
 class MalSpider(scrapy.Spider):
     name = "MAL_Spider_v3_1"
-    target_cols_list = ["anime_id", "synopsis", "image_url", "rating", "va_list"]
+    target_cols_list = [
+        "anime_id", 
+        "synopsis", 
+        "image_url", 
+        "rating", 
+        "va_list", 
+        "staff_list",
+        "recommended_review",
+        "mixedfeelings_review",
+        "notrecommended_review",
+        "recommended_review_count",
+        "mixedfeelings_review_count",
+        "notrecommended_review_count"
+        ]
     
     # Update user variable with your name ["NA","damien", "leroy", "rosamund", "kenneth"]
     user = "damien"
@@ -32,7 +45,7 @@ class MalSpider(scrapy.Spider):
         print(f"Starting scraping operation\n")
         MAL_id_sublist = self.MAL_id_list[0:5]
         for MAL_id in MAL_id_sublist:
-            time.sleep(3)
+            time.sleep(3) # TO DO: Add distribution of wait times
             url = self.base_url + f"/{MAL_id}"
             self.log(f"URL: {url}", level=logging.INFO)
             yield scrapy.Request(url=url, callback=self.parse)
@@ -87,16 +100,29 @@ class MalSpider(scrapy.Spider):
         clean_staff_list = [i for i in unclean_staff_list if not regex.search(i)]
             
         # Extracting user reviews
+        recommended_review = response.css('div.review-element div.body div.text')[0].get()
+        mixedfeelings_review = response.css('div.review-element div.body div.text')[1].get()
+        notrecommnded_review = response.css('div.review-element div.body div.text')[2].get()
 
         # Extracting # of each review type (recommended, mixed feelings, not recommended)
+        recommended_review_count = int(response.css('div.review-ratio__bar').attrib['data-recommended'])
+        mixedfeelings_review_count = int(response.css('div.review-ratio__bar').attrib['data-mixed_feeling'])
+        notrecommnded_review_count = int(response.css('div.review-ratio__bar').attrib['data-not_recommended'])
 
         # Collecting data
         self.data.append({
-            "anime_id": anime_id,
-            "synopsis": synopsis,
-            "image_url": img_url,
+            "anime_id":anime_id,
+            "synopsis":synopsis,
+            "image_url":img_url,
             "rating":rating,
-            "va_list":va_list
+            "va_list":va_list,
+            "staff_list":clean_staff_list,
+            "recommended_review":recommended_review,
+            "mixedfeelings_review":mixedfeelings_review,
+            "notrecommended_review":notrecommnded_review,
+            "recommended_review_count":recommended_review_count,
+            "mixedfeelings_review_count":mixedfeelings_review_count,
+            "notrecommended_review_count":notrecommnded_review_count
         })
 
     @classmethod
