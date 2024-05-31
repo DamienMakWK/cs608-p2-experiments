@@ -9,9 +9,17 @@ import logging
 
 class MalSpider(scrapy.Spider):
     name = "MAL_Spider_v3_1"
-    target_cols_list = ["anime_id", "synopsis", "image_url"]
+    target_cols_list = ["anime_id", "synopsis", "image_url", "rating", "va_list"]
     
-    anime_df = pd.read_csv("C:/Users/user/My Drive/MITB_AI/Term 5/CS608 Recommender Systems/Project 2/cs608-p2-experiments/data/01_raw/rating.csv")
+    # Update user variable with your name ["NA","damien", "leroy", "rosamund", "kenneth"]
+    user = "damien"
+    data_dir = "C:/Users/user/My Drive/MITB_AI/Term 5/CS608 Recommender Systems/Project 2/cs608-p2-experiments/data/01_raw/"
+    if user == "NA":
+        rating_csv_filepath = f"{data_dir}rating.csv"
+    else:
+        rating_csv_filepath = f"{data_dir}rating_{user}.csv"
+    
+    anime_df = pd.read_csv(rating_csv_filepath)
     MAL_id_list = anime_df["anime_id"].unique()
     
     base_url = "https://myanimelist.net/anime"
@@ -57,7 +65,26 @@ class MalSpider(scrapy.Spider):
                 # response.css('a.fw-n img::attr(alt)')[-2].get()   ;   Returns: 'Yonai, Noritomo'
                 # response.css('a.fw-n img::attr(alt)')[-3].get()   ;   Returns: 'Maruyama, Hiroo'
                 # response.css('a.fw-n img::attr(alt)')[-4].get()   ;   Returns: 'Cook, Justin'
-
+        # Sucessful run:
+        # Get 2nd html object with 'div.detail-characters-list.clearfix' (first html object would contain characters & voice actors)
+        staff_html_obj = response.css('div.detail-characters-list.clearfix')[1]
+        # Get all staff names. Example output:
+        # ['\n            ',
+        #  '\n          ',
+        #  'Cook, Justin',
+        #  '\n            ',
+        #  '\n          ',
+        #  'Maruyama, Hiroo',
+        #  '\n            ',
+        #  '\n          ',
+        #  'Yonai, Noritomo',
+        #  '\n            ',
+        #  '\n          ',
+        #  'Irie, Yasuhiro']
+        unclean_staff_list = staff_html_obj.css("a::text").getall()
+        # Removing list elements that start with '\n'
+        regex = re.compile('\\n')
+        clean_staff_list = [i for i in unclean_staff_list if not regex.search(i)]
             
         # Extracting user reviews
 
