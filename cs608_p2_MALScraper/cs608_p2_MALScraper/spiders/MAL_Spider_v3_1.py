@@ -50,7 +50,15 @@ class MalSpider(scrapy.Spider):
         va_list = response.css('td.va-t.ar.pl4.pr4 a::text').getall()
 
         # Extracting staff members
+        # Tried response.css('div.detail-characters-list.clearfix div.left-column.fl-l.divider')[1].get() and gotten CSS segment with staff members
+        # Able to pull image alt text for last 4 images in "Characters & Voice Actors, Staff", which tend to be staff members
+            # Syntax: 
+                # response.css('a.fw-n img::attr(alt)')[-1].get()   ;   Returns: 'Irie, Yasuhiro'
+                # response.css('a.fw-n img::attr(alt)')[-2].get()   ;   Returns: 'Yonai, Noritomo'
+                # response.css('a.fw-n img::attr(alt)')[-3].get()   ;   Returns: 'Maruyama, Hiroo'
+                # response.css('a.fw-n img::attr(alt)')[-4].get()   ;   Returns: 'Cook, Justin'
 
+            
         # Extracting user reviews
 
         # Extracting # of each review type (recommended, mixed feelings, not recommended)
