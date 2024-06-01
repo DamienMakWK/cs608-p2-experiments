@@ -3,6 +3,7 @@ import pandas as pd
 import os
 import re
 import time
+from random import randrange
 from scrapy.crawler import CrawlerProcess
 from scrapy.signals import spider_closed
 import logging
@@ -43,9 +44,8 @@ class MalSpider(scrapy.Spider):
 
     def start_requests(self):
         print(f"Starting scraping operation\n")
-        MAL_id_sublist = self.MAL_id_list[0:5]
-        for MAL_id in MAL_id_sublist:
-            time.sleep(3) # TO DO: Add distribution of wait times
+        for MAL_id in self.MAL_id_list:
+            time.sleep(randrange(3,10))
             url = self.base_url + f"/{MAL_id}"
             self.log(f"URL: {url}", level=logging.INFO)
             yield scrapy.Request(url=url, callback=self.parse)
