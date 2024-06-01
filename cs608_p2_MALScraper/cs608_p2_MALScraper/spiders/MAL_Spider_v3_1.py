@@ -25,7 +25,7 @@ class MalSpider(scrapy.Spider):
         ]
     
     # Update user variable with your name ["NA","damien", "leroy", "rosamund", "kenneth"]
-    user = "damien"
+    user = "NA"
     data_dir = "C:/Users/user/My Drive/MITB_AI/Term 5/CS608 Recommender Systems/Project 2/cs608-p2-experiments/data/01_raw/"
     if user == "NA":
         rating_csv_filepath = f"{data_dir}rating.csv"
@@ -49,6 +49,7 @@ class MalSpider(scrapy.Spider):
             url = self.base_url + f"/{MAL_id}"
             self.log(f"URL: {url}", level=logging.INFO)
             yield scrapy.Request(url=url, callback=self.parse)
+
 
     def parse(self, response):
         # Extracting anime_id
@@ -101,8 +102,22 @@ class MalSpider(scrapy.Spider):
             
         # Extracting user reviews
         recommended_review = response.css('div.review-element div.body div.text')[0].get()
+        recommended_review = re.sub(r"\r\n", " ", recommended_review)
+        recommended_review = re.sub(r"\n", " ", recommended_review)
+        recommended_review = re.sub(r"<.*?>", " ", recommended_review)
+        recommended_review = re.sub(r"\s{2,}", "", recommended_review)
+
         mixedfeelings_review = response.css('div.review-element div.body div.text')[1].get()
+        mixedfeelings_review = re.sub(r"\r\n", " ", mixedfeelings_review)
+        mixedfeelings_review = re.sub(r"\n", " ", mixedfeelings_review)
+        mixedfeelings_review = re.sub(r"<.*?>", " ", mixedfeelings_review)
+        mixedfeelings_review = re.sub(r"\s{2,}", " ", mixedfeelings_review)
+
         notrecommnded_review = response.css('div.review-element div.body div.text')[2].get()
+        notrecommnded_review = re.sub(r"\r\n", " ", notrecommnded_review)
+        notrecommnded_review = re.sub(r"\n", " ", notrecommnded_review)
+        notrecommnded_review = re.sub(r"<.*?>", " ", notrecommnded_review)
+        notrecommnded_review = re.sub(r"\s{2,}", " ", notrecommnded_review)
 
         # Extracting # of each review type (recommended, mixed feelings, not recommended)
         recommended_review_count = int(response.css('div.review-ratio__bar').attrib['data-recommended'])
