@@ -1,8 +1,7 @@
 ﻿# cs608-p2-experiments
-## Data directory fixing
-After cloning the repository, change the following:
-In "cs608-p2-experiments/cs608_p2_MALScraper/cs608_p2_MALScraper/spiders/MAL_Spider_v3_1.py":
-- line 30: Change directory path to your copy of "<yourpathhere>/cs608-p2-experiments/cs608-p2-experiments/data/01_raw/"
+This repository is for the purposes of CS608 Recommender Systems: Project 2 for Group 4. 
+
+Notebooks containing coding artifacts used over the course of the project may be found in the folder "notebooks".
 
 ## Instructions for web scraping
 1. Run all cells in "cs608-p2-experiments/notebooks/01_data_download.ipynb". This will download the kaggle datasets and split "ratings.csv" into "df_unique_anime_damien.csv", "df_unique_anime_leroy.csv", "df_unique_anime_rosamund.csv" and "df_unique_anime_kenneth.csv"
