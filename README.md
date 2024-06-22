@@ -3,6 +3,8 @@ This repository is for the purposes of CS608 Recommender Systems: Project 2 for 
 
 Notebooks containing coding artifacts used over the course of the project may be found in the folder "notebooks".
 
+Dataset artifacts (kaggle artifacts, processed and feature engineered artifacts) can be found in the zip folder submission on elearn.
+
 ## Instructions for web scraping
 1. Run all cells in "cs608-p2-experiments/notebooks/01_data_download.ipynb". This will download the kaggle datasets and split "ratings.csv" into "df_unique_anime_damien.csv", "df_unique_anime_leroy.csv", "df_unique_anime_rosamund.csv" and "df_unique_anime_kenneth.csv"
 2. Amend name in line 29 of "cs608-p2-experiments/cs608_p2_MALScraper/cs608_p2_MALScraper/spiders/MAL_Spider_v3_1.py"
