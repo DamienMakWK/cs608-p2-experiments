@@ -1,11 +1,12 @@
 name: cs608_p2
 channels:
+  - conda-forge
   - defaults
 dependencies:
   - python=3.11.9
   - pip=24.0.0
-  - ipython==8.24.0
-  - ipykernel==6.29.3
+  - ipython=8.24.0
+  - ipykernel=6.29.3
   - pip:
     - cornac==2.2.1
     - matplotlib==3.8.4
@@ -21,3 +22,5 @@ dependencies:
     - wheel==0.43.0
     - kaggle==1.6.14
     - scrapy==2.11.1
+    - sentence-transformers==3.0.0
+    - ipywidgets==8.1.3
